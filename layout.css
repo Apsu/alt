@@ -1,47 +1,40 @@
-Ticker {
-    width: 100%;
-    height: 1;
-    color: $primary;
-    background: $panel;
-    overflow-x: hidden;
-    content-align: right middle;
+Vertical * {
+    content-align: center middle;
+    align: center top;
+}
+
+Horizontal {
+    height: 1fr;
+    margin-bottom: 2;
+}
+Letter {
+    width: 9;
+    /* height: auto; */
+    /* padding: 0; */
+    /* margin: 2 0; */
 }
 
 Grid {
-    /* layout: grid; */
+    height: 4fr;
     grid-size: 10 4;
     grid-gutter: 0 0;
     grid-columns: 10;
     grid-rows: 4 4 5;
-    align: center top;
 }
 
 KbKey {
     width: 9;
     height: 3;
-    background: $panel;
-    border: $secondary tall;
-    content-align: center middle;
+    /* text: $background; */
+    /* background: $background; */
+    border: $primary tall;
 }
 
 Legend {
-    width: 12;
+    width: 9;
     height: 3;
-    color: $panel;
-    border: $secondary tall;
-    content-align: center middle;
+    border: $primary tall;
 }
-
-.lp { color: $panel; background: #ff0000ff; }
-.lr { color: $panel; background: #ff8700ff; }
-.lm { color: $panel; background: #ffd300ff; }
-.li { color: $panel; background: #deff0aff; }
-.lt { color: $panel; background: #a1ff0aff; }
-.rt { color: $panel; background: #0aff99ff; }
-.ri { color: $panel; background: #0aefffff; }
-.rm { color: $panel; background: #147df5ff; }
-.rr { color: $panel; background: #580affff; }
-.rp { color: $panel; background: #be0affff; }
 
 .row1 {
     offset: 0 0;
