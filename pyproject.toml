@@ -11,6 +11,9 @@ python = "^3.10"
 textual = "^0.23.0"
 
 
+[tool.poetry.group.dev.dependencies]
+textual = {extras = ["dev"], version = "^0.23.0"}
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
