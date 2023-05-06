@@ -1,122 +1,126 @@
 name: Qwerty
 keys:
   q:
-    finger: LP
+    fingers: LP
     row: 1
     col: 1
   w:
-    finger: LR
+    fingers: LR
     row: 1
     col: 2
   e:
-    finger: LM
+    fingers: [LM, LR]
     row: 1
     col: 3
   r:
-    finger: LI
+    fingers: [LI, LM]
     row: 1
     col: 4
   t:
-    finger: LI
+    fingers: [LI, LM]
     row: 1
     col: 5
   y:
-    finger: RI
+    fingers: [RI, RM]
     row: 1
     col: 6
   u:
-    finger: RI
+    fingers: [RI, RM]
     row: 1
     col: 7
   i:
-    finger: RM
+    fingers: [RM, RR]
     row: 1
     col: 8
   o:
-    finger: RR
+    fingers: [RR, RM]
     row: 1
     col: 9
   p:
-    finger: RP
+    fingers: RP
     row: 1
     col: 10
   a:
-    finger: LP
+    fingers: LP
     row: 2
     col: 1
   s:
-    finger: LR
+    fingers: [LR, LM]
     row: 2
     col: 2
   d:
-    finger: LM
+    fingers: [LM, LI]
     row: 2
     col: 3
   f:
-    finger: LI
+    fingers: [LI, LM]
     row: 2
     col: 4
   g:
-    finger: LI
+    fingers: LI
     row: 2
     col: 5
   h:
-    finger: RI
+    fingers: RI
     row: 2
     col: 6
   j:
-    finger: RI
+    fingers: [RI, RM]
     row: 2
     col: 7
   k:
-    finger: RM
+    fingers: [RM, RR]
     row: 2
     col: 8
   l:
-    finger: RR
+    fingers: [RR, RP]
     row: 2
     col: 9
   ;:
-    finger: RP
+    fingers: RP
     row: 2
     col: 10
   z:
-    finger: LP
+    fingers: LR
     row: 3
     col: 1
   x:
-    finger: LR
+    fingers: [LM, LT]
     row: 3
     col: 2
   c:
-    finger: LM
+    fingers: [LI, LM, LT]
     row: 3
     col: 3
   v:
-    finger: LI
+    fingers: [LI, LT]
     row: 3
     col: 4
   b:
-    finger: LI
+    fingers: [LI, RI, LT, RT]
     row: 3
     col: 5
   n:
-    finger: RI
+    fingers: [RI, RT]
     row: 3
     col: 6
   m:
-    finger: RI
+    fingers: [RI, RM, RT]
     row: 3
     col: 7
   ',':
-    finger: RM
+    fingers: [RM, RT]
     row: 3
     col: 8
   .:
-    finger: RR
+    fingers: RR
     row: 3
     col: 9
   /:
-    finger: RP
+    fingers: RP
     row: 3
     col: 10
+  ' ':
+    fingers: [LT, RT]
+    row: 4
+    col: 0

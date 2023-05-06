@@ -19,11 +19,12 @@ class Layout():
             self.layout = yaml.safe_load(f)
 
     def fingers(self, text: str) -> List[str]:
-        return [self.layout["keys"][key]["finger"] if key in self.layout["keys"] else None for key in text]
+        return [(key, self.layout["keys"][key]["fingers"]) if key in self.layout["keys"] else None for key in text]
 
     def finger(self, key: str) -> str:
         if key in self.layout["keys"]:
-            return self.layout["keys"][key]["finger"]
+            fingers = self.layout["keys"][key]["fingers"]
+            return fingers[0] if isinstance(fingers, list) else fingers
 
 class Hand():
     state: Dict[str, bool] = {f: False for f in "PRMIT"}
@@ -39,7 +40,8 @@ class Hand():
 def alt(word: str) -> None:
     layout = Layout("layouts/qwerty.yaml")
 
-    print(layout.fingers(word))
+    for char in layout.fingers(word):
+        print(char)
 
 if __name__ == "__main__":
     alt()
