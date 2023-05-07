@@ -144,6 +144,7 @@ def alt(file: str, max_age: int, verbose: bool, thumbs: bool, bigrams: bool, que
     ages = []
     unknowns = []
     results = []
+    usage = {finger:0 for finger in [f"L{f}" for f in "PRMIT"] + [f"R{f}" for f in "TIMRP"] }
 
     with click.progressbar(query, label="Processing") as query_bar:
         for char in query_bar:
@@ -154,7 +155,7 @@ def alt(file: str, max_age: int, verbose: bool, thumbs: bool, bigrams: bool, que
             def_finger = layout.fingers(char)[0]
             ages.append(float(age))
             if finger != def_finger:
-                alts.append((char, finger, age))
+                alts.append((char, finger))
             if finger == prev_finger:
                 if char != prev_char:
                     sfbs.append((prev_char, char, finger))
@@ -162,8 +163,8 @@ def alt(file: str, max_age: int, verbose: bool, thumbs: bool, bigrams: bool, que
                     rpts.append((char, finger))
             prev_char = char
             prev_finger = finger
-            if verbose:
-                results.append((char, finger))
+            results.append((char, finger))
+            usage[finger] += 1
 
     if verbose:
         for res in results:
@@ -179,7 +180,7 @@ def alt(file: str, max_age: int, verbose: bool, thumbs: bool, bigrams: bool, que
     print(f"ALTS: {len(alts) / len_query:.2%}")
     print(f"UNKNOWNS: {len(unknowns) / len_query:.2%}")
     print(f"AGES: avg = {mean(ages)}, median = {median(ages)}, mode = {mode(ages)}")
-
+    print(f"USAGE: {' '.join([f'{f}:{u/len_query:.2%}' for f, u in usage.items()])}")
 
 if __name__ == "__main__":
     alt() # type:ignore
