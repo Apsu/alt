@@ -123,10 +123,10 @@ def alt(file: str, max_age: int, query: str) -> None:
     if not query:
         with open(f"wordlists/{file}.json") as f:
             query = json.load(f)["words"]
+        query = ' '.join(query).lower()
     else:
         print(query)
 
-    query = ' '.join(query).lower()
     len_query = len(query)
 
     for char in query:
@@ -145,6 +145,7 @@ def alt(file: str, max_age: int, query: str) -> None:
                 rpts.append((char, finger))
         prev_char = char
         prev_finger = finger
+        print(f"{char} -> {finger}")
 
     print("-"*12)
     print(f"SFB: {len(sfbs) / len_query:.2%}")
