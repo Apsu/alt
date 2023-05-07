@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
 import click
+import json
 import yaml
+from statistics import mean, median, mode
 
-from typing import Dict
+from typing import Dict, Tuple
 
 
 class Layout():
@@ -15,7 +17,7 @@ class Layout():
         if key in self.layout["keys"]:
             fingers = self.layout["keys"][key]["fingers"]
             return fingers
-        return []
+        return ["None"]
 
 
 class Hands():
@@ -68,44 +70,90 @@ class Keyboard():
 
     def __init__(self, layout: Layout, max_age: int) -> None:
         self.layout = layout
+        self.max_age = max_age
         self.hands = Hands(max_age)
 
-    def press(self, char: str) -> str:
+    def press(self, char: str) -> Tuple[str, int]:
         # Get options
         options = self.layout.fingers(char)
+        if options == ["None"]:
+            return "None", 0
         # LRU tracker
         lru = {}
         # Walk options
+        def_finger = options[0]
+
         for finger in options:
-            idx = self.hands.age(finger)
+            age = self.hands.age(finger)
 
             # If not used recently or same key was pressed last by this finger
-            if idx == 0 or self.hands.pressed(finger, char) == True:
+            if age == 0 or self.hands.pressed(finger, char):
                 # Mark used
                 self.hands.press(finger, char)
-                return finger
+                return finger, age
             # Track ages
             else:
                 lru[finger] = self.hands.age(finger)
 
         # Return least recently used
         oldest = max(lru.items(), key=lambda k: k[1])
+        # print(f"LRU: {char} {lru}, oldest: {oldest}")
         self.hands.press(oldest[0], char)
-        return oldest[0]
+        return oldest
 
 
 @click.command()
-@click.option("--max_age", "-m", default=3, help="Largest SFS to avoid")
-@click.argument("query", nargs=-1)
-def alt(query: str, max_age: int) -> None:
+@click.option("--max_age", "-m", default=2, help="Largest SFS to avoid")
+@click.option("--file", "-f", default="english", help="Monkeytype wordlist to parse")
+@click.argument("query", required=False)
+def alt(file: str, max_age: int, query: str) -> None:
     """Analyze string of characters"""
 
     layout = Layout("layouts/qwerty.yaml")
-
     keyboard = Keyboard(layout, max_age)
 
-    for char in ''.join(query):
-        print(f"{char} -> {keyboard.press(char)}")
+    prev_char = ""
+    prev_finger = ""
+    sfbs = []
+    rpts= []
+    alts = []
+    ages = []
+    unknowns = []
+
+    if not query:
+        with open(f"wordlists/{file}.json") as f:
+            query = json.load(f)["words"]
+    else:
+        print(query)
+
+    query = ' '.join(query).lower()
+    len_query = len(query)
+
+    for char in query:
+        finger, age = keyboard.press(char)
+        if finger == "None":
+            unknowns.append(char)
+            continue
+        def_finger = layout.fingers(char)[0]
+        ages.append(float(age))
+        if finger != def_finger:
+            alts.append((char, finger, age))
+        if finger == prev_finger:
+            if char != prev_char:
+                sfbs.append((prev_char, char, finger))
+            else:
+                rpts.append((char, finger))
+        prev_char = char
+        prev_finger = finger
+
+    print("-"*12)
+    print(f"SFB: {len(sfbs) / len_query:.2%}")
+    for sfb in sorted(set(sfbs)):
+        print(f"{sfb[0]}{sfb[1]}: {sfb[2]}")
+    print(f"RPT: {len(rpts) / len_query:.2%}")
+    print(f"ALTS: {len(alts) / len_query:.2%}")
+    print(f"UNKNOWN: {len(unknowns) / len_query:.2%}")
+    print(f"AGES: avg = {mean(ages)}, median = {median(ages)}, mode = {mode(ages)}")
 
 
 if __name__ == "__main__":
