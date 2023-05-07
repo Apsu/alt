@@ -119,8 +119,9 @@ class Keyboard():
 @click.option("--file", "-f", help="Monkeytype wordlist to parse")
 @click.option("--verbose", "-v", default=False, is_flag=True, help="Show keypresses")
 @click.option("--thumbs", "-t", default=False, is_flag=True, help="Use thumbrow or not")
+@click.option("--bigrams", "-b", default=False, is_flag=True, help="Show SFBs or not")
 @click.argument("query", required=False)
-def alt(file: str, max_age: int, verbose: bool, thumbs: bool, query: str) -> None:
+def alt(file: str, max_age: int, verbose: bool, thumbs: bool, bigrams: bool, query: str) -> None:
     """Analyze string of characters"""
 
     layout = Layout("layouts/qwerty.yaml", thumbs)
@@ -171,8 +172,9 @@ def alt(file: str, max_age: int, verbose: bool, thumbs: bool, query: str) -> Non
     len_query = len(query)
     print("-"*12)
     print(f"SFBS: {len(sfbs) / len_query:.2%}")
-    for sfb in sorted(set(sfbs)):
-        print(f"{sfb[0]}{sfb[1]}: {sfb[2]}")
+    if bigrams:
+        for sfb in sorted(set(sfbs)):
+            print(f"{sfb[0]}{sfb[1]}: {sfb[2]}")
     print(f"RPTS: {len(rpts) / len_query:.2%}")
     print(f"ALTS: {len(alts) / len_query:.2%}")
     print(f"UNKNOWNS: {len(unknowns) / len_query:.2%}")
