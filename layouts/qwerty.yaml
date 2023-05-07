@@ -1,11 +1,11 @@
 name: Qwerty
 keys:
   q:
-    fingers: LP
+    fingers: [LP]
     row: 1
     col: 1
   w:
-    fingers: LR
+    fingers: [LR]
     row: 1
     col: 2
   e:
@@ -37,11 +37,11 @@ keys:
     row: 1
     col: 9
   p:
-    fingers: RP
+    fingers: [RP]
     row: 1
     col: 10
   a:
-    fingers: LP
+    fingers: [LP]
     row: 2
     col: 1
   s:
@@ -57,11 +57,11 @@ keys:
     row: 2
     col: 4
   g:
-    fingers: LI
+    fingers: [LI]
     row: 2
     col: 5
   h:
-    fingers: RI
+    fingers: [RI]
     row: 2
     col: 6
   j:
@@ -77,47 +77,54 @@ keys:
     row: 2
     col: 9
   ;:
-    fingers: RP
+    fingers: [RP]
     row: 2
     col: 10
   z:
-    fingers: LR
+    fingers: [LR]
     row: 3
     col: 1
   x:
-    fingers: [LM, LT]
+    # fingers: [LM, LT]
+    fingers: [LT, LM]
     row: 3
     col: 2
   c:
-    fingers: [LI, LM, LT]
+    # fingers: [LI, LM, LT]
+    fingers: [LT, LI, LM]
     row: 3
     col: 3
   v:
-    fingers: [LI, LT]
+    # fingers: [LI, LT]
+    fingers: [LT, LI]
     row: 3
     col: 4
   b:
-    fingers: [LI, RI, LT, RT]
+    # fingers: [LI, RI, LT, RT]
+    fingers: [LT, RT, LI, RI]
     row: 3
     col: 5
   n:
-    fingers: [RI, RT]
+    # fingers: [RI, RT]
+    fingers: [RT, RI]
     row: 3
     col: 6
   m:
-    fingers: [RI, RM, RT]
+    # fingers: [RI, RM, RT]
+    fingers: [RT, RI, RM]
     row: 3
     col: 7
   ',':
-    fingers: [RM, RT]
+    # fingers: [RM, RT]
+    fingers: [RT, RM]
     row: 3
     col: 8
   .:
-    fingers: RR
+    fingers: [RR]
     row: 3
     col: 9
   /:
-    fingers: RP
+    fingers: [RP]
     row: 3
     col: 10
   ' ':
