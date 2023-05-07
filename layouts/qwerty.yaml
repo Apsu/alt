@@ -6,7 +6,6 @@ keys:
     col: 1
   w:
     fingers: [LR, LP]
-    # fingers: [LR]
     row: 1
     col: 2
   e:
@@ -90,49 +89,35 @@ keys:
     row: 0
     col: 11
   z:
-    fingers: [LR]
+    fingers: [LR, LP]
     row: 3
     col: 1
   x:
-    # fingers: [LM, LT]
     fingers: [LT, LM]
-    # fingers: [LM]
     row: 3
     col: 2
   c:
-    # fingers: [LI, LM, LT]
     fingers: [LT, LI, LM]
-    # fingers: [LI, LM]
     row: 3
     col: 3
   v:
-    # fingers: [LI, LT]
     fingers: [LT, LI]
-    # fingers: [LI]
     row: 3
     col: 4
   b:
-    # fingers: [LI, RI, LT, RT]
     fingers: [LT, RT, LI, RI]
-    # fingers: [LI, RI]
     row: 3
     col: 5
   n:
-    # fingers: [RI, RT]
     fingers: [RT, RI]
-    # fingers: [RI]
     row: 3
     col: 6
   m:
-    # fingers: [RI, RM, RT]
     fingers: [RT, RI, RM]
-    # fingers: [RI, RM]
     row: 3
     col: 7
-  ',':
-    # fingers: [RM, RT]
+  ",":
     fingers: [RT, RM]
-    # fingers: [RM]
     row: 3
     col: 8
   .:
@@ -143,7 +128,7 @@ keys:
     fingers: [RP]
     row: 3
     col: 10
-  ' ':
+  " ":
     fingers: [RT, LT]
     row: 4
     col: 0

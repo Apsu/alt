@@ -9,9 +9,21 @@ from typing import Dict, Tuple
 
 
 class Layout():
-    def __init__(self, file: str) -> None:
+    def __init__(self, file: str, thumbs: bool) -> None:
         with open(file) as f:
             self.layout = yaml.safe_load(f)
+
+        # If thumbrow disabled
+        if not thumbs:
+            for key in self.layout["keys"]:
+                # Skip space
+                if key == ' ':
+                    continue
+                # Filter thumbs from fingers list
+                self.layout["keys"][key]["fingers"] = [
+                    f for f in self.layout["keys"][key]["fingers"]
+                    if "T" not in f
+                ]
 
     def fingers(self, key: str) -> list[str]:
         if key in self.layout["keys"]:
@@ -103,13 +115,15 @@ class Keyboard():
 
 
 @click.command()
-@click.option("--max_age", "-m", default=2, help="Largest SFS to avoid")
+@click.option("--max_age", "-m", default=3, help="Largest SFS to avoid")
 @click.option("--file", "-f", default="english", help="Monkeytype wordlist to parse")
+@click.option("--verbose", "-v", default=False, is_flag=True, help="Show keypresses")
+@click.option("--thumbs", "-t", default=False, is_flag=True, help="Use thumbrow or not")
 @click.argument("query", required=False)
-def alt(file: str, max_age: int, query: str) -> None:
+def alt(file: str, max_age: int, verbose: bool, thumbs: bool, query: str) -> None:
     """Analyze string of characters"""
 
-    layout = Layout("layouts/qwerty.yaml")
+    layout = Layout("layouts/qwerty.yaml", thumbs)
     keyboard = Keyboard(layout, max_age)
 
     prev_char = ""
@@ -120,10 +134,9 @@ def alt(file: str, max_age: int, query: str) -> None:
     ages = []
     unknowns = []
 
-    if not query:
-        with open(f"wordlists/{file}.json") as f:
-            query = json.load(f)["words"]
-        query = ' '.join(query).lower()
+    if file:
+        with open(f"wordlists/{file}.txt") as f:
+            query = ' '.join(f.readlines())
     else:
         print(query)
 
@@ -145,15 +158,16 @@ def alt(file: str, max_age: int, query: str) -> None:
                 rpts.append((char, finger))
         prev_char = char
         prev_finger = finger
-        print(f"{char} -> {finger}")
+        if verbose:
+            print(f"{char} -> {finger}")
 
     print("-"*12)
-    print(f"SFB: {len(sfbs) / len_query:.2%}")
+    print(f"SFBS: {len(sfbs) / len_query:.2%}")
     for sfb in sorted(set(sfbs)):
         print(f"{sfb[0]}{sfb[1]}: {sfb[2]}")
-    print(f"RPT: {len(rpts) / len_query:.2%}")
+    print(f"RPTS: {len(rpts) / len_query:.2%}")
     print(f"ALTS: {len(alts) / len_query:.2%}")
-    print(f"UNKNOWN: {len(unknowns) / len_query:.2%}")
+    print(f"UNKNOWNS: {len(unknowns) / len_query:.2%}")
     print(f"AGES: avg = {mean(ages)}, median = {median(ages)}, mode = {mode(ages)}")
 
 
