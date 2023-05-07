@@ -3,7 +3,7 @@
 import click
 import yaml
 
-from typing import Dict, List, Any, Iterator, Tuple
+from typing import Dict
 
 
 class Layout():
@@ -11,21 +11,17 @@ class Layout():
         with open(file) as f:
             self.layout = yaml.safe_load(f)
 
-    # def fingers(self, text: str) -> list[tuple[str, Any]]:
-    #     return [(key, self.layout["keys"][key]["fingers"] if key in self.layout["keys"] else []) for key in text]
-
     def fingers(self, key: str) -> list[str]:
         if key in self.layout["keys"]:
             fingers = self.layout["keys"][key]["fingers"]
             return fingers
         return []
-    
+
 
 class Hands():
-    max_use: int = 2
     hands: Dict[str, Dict] = {
         finger: {
-            "use": 0,
+            "age": 0,
             "key": ""
         }
         for finger in
@@ -33,70 +29,84 @@ class Hands():
             [f"R{f}" for f in "TIMRP"]
     }
 
-    def __getitem__(self, k: str) -> Tuple[int, str]:
-        return self.hands[k]["use"], self.hands[k]["key"]
+    def __init__(self, max_age: int = 2) -> None:
+        self.max_age = max_age
+
+    def age(self, finger: str) -> int:
+        return self.hands[finger]["age"]
 
     def reset(self) -> None:
         for k in self.hands:
-            self.hands[k] = {"use": 0, "key": ""}
-    
+            self.hands[k] = {"age": 0, "key": ""}
+
     def pressed(self, finger: str, char: str) -> bool:
+        # Was this character pressed by this finger?
         return self.hands[finger]["key"] == char
-    
+
     def press(self, finger: str, char: str) -> None:
         for k in self.hands:
-            use = self.hands[k]["use"]
-            if k != finger:
-                if use > 0:
-                    if use < self.max_use:
-                        self.hands[k]["use"] += 1
-                    else:
-                        self.hands[k] = {"use": 0, "key": ""}
+            age = self.hands[k]["age"]
+            # Target finger
+            if k == finger:
+                self.hands[k] = {"age": 1, "key": char}
+            # Other fingers
             else:
-                self.hands[k] = {"use": 1, "key": char}
-    
+                # Used recently
+                if age > 0:
+                    # But not too recently
+                    if age < self.max_age:
+                        # Increment
+                        self.hands[k]["age"] += 1
+                    # Stale, reset
+                    else:
+                        self.hands[k] = {"age": 0, "key": ""}
+
+
 class Keyboard():
     layout: Layout
     hands: Hands
 
-    def __init__(self, layout: Layout) -> None:
+    def __init__(self, layout: Layout, max_age: int) -> None:
         self.layout = layout
-        self.hands = Hands()
+        self.hands = Hands(max_age)
 
     def press(self, char: str) -> str:
         # Get options
-        fingers = self.layout.fingers(char) 
-        # Walk options
+        options = self.layout.fingers(char)
+        # LRU tracker
         lru = {}
-        use = ""
-        for finger in fingers:
-            idx, key = self.hands[finger]
+        # Walk options
+        for finger in options:
+            idx = self.hands.age(finger)
 
-            # If not used recently or same key was pressed last by finger
-            if idx == 0 or self.hands.pressed(finger, char):
+            # If not used recently or same key was pressed last by this finger
+            if idx == 0 or self.hands.pressed(finger, char) == True:
                 # Mark used
                 self.hands.press(finger, char)
                 return finger
-            # Track usages
+            # Track ages
             else:
-                lru[finger] = self.hands[finger]
+                lru[finger] = self.hands.age(finger)
 
-        # Get least recently used
-        oldest = max(lru, key=lambda k:k[0])
-        print(f"LRU: {lru}, Oldest: {oldest}")
-        # No option found so return first choice
-        self.hands.press(fingers[0], char)
-        return fingers[0]
+        # Return least recently used
+        oldest = max(lru.items(), key=lambda k: k[1])
+        self.hands.press(oldest[0], char)
+        return oldest[0]
+
 
 @click.command()
-@click.argument("query")
-def alt(query: str) -> None:
+@click.option("--max_age", "-m", default=3, help="Largest SFS to avoid")
+@click.argument("query", nargs=-1)
+def alt(query: str, max_age: int) -> None:
+    """Analyze string of characters"""
+
     layout = Layout("layouts/qwerty.yaml")
 
-    keyboard = Keyboard(layout)
+    keyboard = Keyboard(layout, max_age)
 
-    for char in query:
+    for char in ''.join(query):
         print(f"{char} -> {keyboard.press(char)}")
+
 
 if __name__ == "__main__":
     alt() # type:ignore
