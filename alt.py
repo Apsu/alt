@@ -129,7 +129,7 @@ def alt(file: str, max_age: int, verbose: bool, thumbs: bool, bigrams: bool, que
 
     if file:
         with open(f"wordlists/{file}.txt") as f:
-            query = ' '.join(f.readlines())
+            query = ' '.join(f.read().splitlines())
     elif query:
         print(query)
     else:
@@ -148,6 +148,7 @@ def alt(file: str, max_age: int, verbose: bool, thumbs: bool, bigrams: bool, que
 
     with click.progressbar(query, label="Processing") as query_bar:
         for char in query_bar:
+            char = char.lower()
             finger, age = keyboard.press(char)
             if finger == "None":
                 unknowns.append(char)
