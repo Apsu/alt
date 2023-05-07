@@ -126,14 +126,6 @@ def alt(file: str, max_age: int, verbose: bool, thumbs: bool, query: str) -> Non
     layout = Layout("layouts/qwerty.yaml", thumbs)
     keyboard = Keyboard(layout, max_age)
 
-    prev_char = ""
-    prev_finger = ""
-    sfbs = []
-    rpts= []
-    alts = []
-    ages = []
-    unknowns = []
-
     if file:
         with open(f"wordlists/{file}.txt") as f:
             query = ' '.join(f.readlines())
@@ -143,9 +135,16 @@ def alt(file: str, max_age: int, verbose: bool, thumbs: bool, query: str) -> Non
         print("One of --file or query required")
         return
 
-    len_query = len(query)
+    prev_char = ""
+    prev_finger = ""
+    sfbs = []
+    rpts= []
+    alts = []
+    ages = []
+    unknowns = []
+    results = []
 
-    with click.progressbar(query) as query_bar:
+    with click.progressbar(query, label="Processing") as query_bar:
         for char in query_bar:
             finger, age = keyboard.press(char)
             if finger == "None":
@@ -163,8 +162,13 @@ def alt(file: str, max_age: int, verbose: bool, thumbs: bool, query: str) -> Non
             prev_char = char
             prev_finger = finger
             if verbose:
-                print(f"{char} -> {finger}")
+                results.append((char, finger))
 
+    if verbose:
+        for res in results:
+            print(f"{res[0]} -> {res[1]}")
+
+    len_query = len(query)
     print("-"*12)
     print(f"SFBS: {len(sfbs) / len_query:.2%}")
     for sfb in sorted(set(sfbs)):
