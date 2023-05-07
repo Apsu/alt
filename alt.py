@@ -116,7 +116,7 @@ class Keyboard():
 
 @click.command()
 @click.option("--max_age", "-m", default=3, help="Largest SFS to avoid")
-@click.option("--file", "-f", default="english", help="Monkeytype wordlist to parse")
+@click.option("--file", "-f", help="Monkeytype wordlist to parse")
 @click.option("--verbose", "-v", default=False, is_flag=True, help="Show keypresses")
 @click.option("--thumbs", "-t", default=False, is_flag=True, help="Use thumbrow or not")
 @click.argument("query", required=False)
@@ -137,29 +137,33 @@ def alt(file: str, max_age: int, verbose: bool, thumbs: bool, query: str) -> Non
     if file:
         with open(f"wordlists/{file}.txt") as f:
             query = ' '.join(f.readlines())
-    else:
+    elif query:
         print(query)
+    else:
+        print("One of --file or query required")
+        return
 
     len_query = len(query)
 
-    for char in query:
-        finger, age = keyboard.press(char)
-        if finger == "None":
-            unknowns.append(char)
-            continue
-        def_finger = layout.fingers(char)[0]
-        ages.append(float(age))
-        if finger != def_finger:
-            alts.append((char, finger, age))
-        if finger == prev_finger:
-            if char != prev_char:
-                sfbs.append((prev_char, char, finger))
-            else:
-                rpts.append((char, finger))
-        prev_char = char
-        prev_finger = finger
-        if verbose:
-            print(f"{char} -> {finger}")
+    with click.progressbar(query) as query_bar:
+        for char in query_bar:
+            finger, age = keyboard.press(char)
+            if finger == "None":
+                unknowns.append(char)
+                continue
+            def_finger = layout.fingers(char)[0]
+            ages.append(float(age))
+            if finger != def_finger:
+                alts.append((char, finger, age))
+            if finger == prev_finger:
+                if char != prev_char:
+                    sfbs.append((prev_char, char, finger))
+                else:
+                    rpts.append((char, finger))
+            prev_char = char
+            prev_finger = finger
+            if verbose:
+                print(f"{char} -> {finger}")
 
     print("-"*12)
     print(f"SFBS: {len(sfbs) / len_query:.2%}")
