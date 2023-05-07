@@ -115,11 +115,11 @@ class Keyboard():
 
 
 @click.command()
-@click.option("--max_age", "-m", default=3, help="Largest SFS to avoid")
-@click.option("--file", "-f", help="Monkeytype wordlist to parse")
+@click.option("--max_age", "-m", default=3, help="Max finger age to track")
+@click.option("--file", "-f", help="Text wordlist to parse")
 @click.option("--verbose", "-v", default=False, is_flag=True, help="Show keypresses")
-@click.option("--thumbs", "-t", default=False, is_flag=True, help="Use thumbrow or not")
-@click.option("--bigrams", "-b", default=False, is_flag=True, help="Show SFBs or not")
+@click.option("--thumbs", "-t", default=False, is_flag=True, help="Use thumbrow")
+@click.option("--bigrams", "-b", default=False, is_flag=True, help="Show SFBs")
 @click.argument("query", required=False)
 def alt(file: str, max_age: int, verbose: bool, thumbs: bool, bigrams: bool, query: str) -> None:
     """Analyze string of characters"""
