@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 
-import click
 import operator
 import sys
 
-from collections import Counter
 from typing import Dict, List, Tuple
-from itertools import product, pairwise, combinations
+from itertools import product, pairwise
 
 LAYOUT = {
     k:(r,c) for r, x in enumerate([
@@ -29,8 +27,8 @@ FINGERMAP = FingerMap([
     ["p","rp","mr","im","i","IM","IM","MI","RM","RP"],
     # a   s    d    f    g   h   j    k    l   ;   '
     ["p","rm","mi","im","i","I","IM","MR","R","P","P"],
-    # z   x   c   v   b    n   m    ,   .   /
-    ["r","m","i","i","Ii","I","I","M","R","P"],
+    # z   x   c    v   b    n   m    ,   .   /
+    ["r","m","im","i","Ii","I","IM","M","R","P"],
 ])
 
 def parse(word: str) -> List[str]:
@@ -40,7 +38,7 @@ def parse(word: str) -> List[str]:
     wpairs = list(pairwise(word))
 
     f = lambda x: "prmitTIMRPP".index(x)
-    eq = lambda x: operator.eq(*x[0]) if not operator.eq(*x[1]) else False
+    eq = lambda x: operator.eq(*x[0]) and not operator.eq(*x[1])
     dist = lambda x, y: abs(f(x) - y)
 
     def score(option: List[str]) -> Tuple[int, int, int]:
@@ -65,13 +63,10 @@ if __name__ == "__main__":
 
     sfbs = 0
     length = 0
-    with open(sys.argv[1]) as f:
-        for line in f.readlines():
-            for word in line.split():
-                parsed = parse(word.lower())
-                sfbs += parsed[1][0]
-                length += len(word)
-                # print(word)
-                # print(parsed)
-
+    for word in sys.argv[1].split():
+        parsed = parse(word.lower())
+        sfbs += parsed[1][0]
+        length += len(word)
+        print(word)
+        print(parsed)
     print(f"SFBs: {sfbs / length:.2%}")
