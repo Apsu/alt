@@ -23,8 +23,8 @@ class FingerMap:
         return self.fmap[index[0]][index[1]]
 
 FINGERMAP = FingerMap([
-    # q   w    e    r    t    y    u    i    o    p
-    ["p","rp","mr","im","i","IM","IM","MI","RM","RP"],
+    # q   w    e    r    t   y   u    i    o    p
+    ["p","rp","mr","im","i","I","IM","MI","RM","RP"],
     # a   s    d    f    g   h   j    k    l   ;   '
     ["p","rm","mi","im","i","I","IM","MR","R","P","P"],
     # z   x   c    v   b    n   m    ,   .   /
@@ -34,7 +34,6 @@ FINGERMAP = FingerMap([
 def parse(word: str) -> List[str]:
     options = [FINGERMAP[LAYOUT[char]] for char in word if char in LAYOUT]
     columns = [LAYOUT[char][1] for char in word if char in LAYOUT]
-    cpairs = list(pairwise(columns))
     wpairs = list(pairwise(word))
 
     f = lambda x: "prmitTIMRPP".index(x)
